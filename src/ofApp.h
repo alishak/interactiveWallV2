@@ -13,7 +13,12 @@ class ofApp : public ofBaseApp{
 		int thresh_low;
 		int thresh_high;
 		int blur_amt;
+		int blob_min_area;
+		int blob_max_area;
+		int blob_max_blobs;
+
 	public:
+		~ofApp();
 		void setup();
 		void update();
 		void draw();
@@ -35,8 +40,7 @@ class ofApp : public ofBaseApp{
 		ofxCvBlob					centroid[10];
 		
 		ofPixels				normalPixels;
-		ofPixels				orig;
-		ofPixels				orig_diff;
+		ofPixels				diffPixels;
 
 		unsigned short *		orig_shorts; //reference
 		unsigned short *		orig_shorts_diff; //deep copy

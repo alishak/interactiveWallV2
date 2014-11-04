@@ -1,14 +1,25 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
+ofApp::~ofApp() {
+	//delete references on exit to prevent any memory leaks
+	delete[] orig_shorts_diff;
+	*orig_shorts = NULL;
+	*orig_shorts = NULL;
+}
+
+//--------------------------------------------------------------
 void ofApp::setup(){
+	//Instantiate the kinect reference
 	kinect = new ofxKFW2::Device;
 	kinect->open();
 	kinect->initDepth();
 
+	//Hardcoded values after sampling form the kinect
 	kWidth = 512;// kinect->getDepth()->getPixelsRef().getWidth();
 	kHeight = 424;// kinect->getDepth()->getPixelsRef().getHeight();
 
+	//Source and destination points for warpIntoMe() openCV function
 	src_cam_warp[0] = ofPoint(0, 0);
 	src_cam_warp[1] = ofPoint(kWidth, 0);
 	src_cam_warp[2] = ofPoint(kWidth, kHeight);
@@ -19,7 +30,9 @@ void ofApp::setup(){
 	dest_cam_warp[2] = ofPoint(kWidth, kHeight);
 	dest_cam_warp[3] = ofPoint(0, kHeight);
 
+	//Allocating ofPixels and ofxCVGrayscaleImage instances
 	normalPixels.allocate(kWidth, kHeight, OF_PIXELS_MONO);
+	//diffPixels.allocate(kWidth, kHeight, OF_PIXELS_MONO); //not used for now
 
 	grayScale.allocate(kWidth, kHeight);
 	grayImage.allocate(kWidth, kHeight);
@@ -29,9 +42,13 @@ void ofApp::setup(){
 	//Allocated onto the heap for copying
 	orig_shorts_diff = new unsigned short[kWidth * kHeight];
 
+	//Modifiable attributes
 	thresh_low = 60;
 	thresh_high = 150;
 	blur_amt = 1;
+	blob_min_area = 50;
+	blob_max_area = 700;
+	blob_max_blobs = 2;
 }
 
 //--------------------------------------------------------------
@@ -39,8 +56,9 @@ void ofApp::update(){
 	kinect->update();
 	grayScale.setFromPixels(kinect->getDepth()->getPixelsRef());
 
+	//Wait for kinect to start sampling
 	if (kinect->getDepth()->getPixels() != NULL) {
-		orig_shorts = kinect->getDepth()->getPixels();
+		orig_shorts = kinect->getDepth()->getPixels(); //update depth array
 		
 		//Original calibration on start
 		if (first) {
@@ -56,9 +74,10 @@ void ofApp::update(){
 			bLearnBackground = false;
 		}
 
+		//Calculate the difference for each pixel and threshold the values
 		for (int i = 0; i < kWidth * kHeight; i++) {
 			int valtemp = orig_shorts[i] - orig_shorts_diff[i];
-			
+
 			//Debugging info
 			/* 
 			if (i < kWidth * kHeight / 1000) {
@@ -79,16 +98,20 @@ void ofApp::update(){
 			normalPixels[i] = (unsigned char)valtemp;
 		}
 
+		//Retreive threshold image
 		CV_calc.setFromPixels(normalPixels);
 		grayImage.warpIntoMe(CV_calc, src_cam_warp, dest_cam_warp);
 
+		//Blur to reduce noise & find blobs of white pixels
 		grayImage.blur(blur_amt);
-		contours.findContours(grayImage, 50, 700, 2, true, true);
+		contours.findContours(grayImage, blob_min_area, blob_max_area, blob_max_blobs, true, true);
 
 		for (int i = 0; i < contours.blobs.size(); i++) {
 			centroid[i] = contours.blobs[i];
 		}
 	}
+
+	//threshold to be able to see Raw depth image
 	grayScale.adaptiveThreshold(3001);
 }
 
@@ -100,11 +123,13 @@ void ofApp::draw(){
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
 
 	ofPushStyle();
+	ofSetLineWidth(3);
 	ofSetHexColor(0xFF0000);//Red
 	ofNoFill();
+
+	//Draw all available blobs
 	for (int i = 0; i < contours.blobs.size(); i++) {
-		//ofRect(centroid[i].centroid.x, centroid[i].centroid.y, centroid[i].boundingRect.width, centroid[i].boundingRect.height);
-		//centroid[i].draw(500 + 10*i, 500+10*i);
+		
 		ofRect((ofGetWidth() / 2) + ofMap(centroid[i].boundingRect.x, 0, grayImage.width, 0, ofGetWidth() / 2),
 			(ofGetHeight() / 2) + ofMap(centroid[i].boundingRect.y, 0, grayImage.height, 0, ofGetHeight() / 2),
 			ofMap(centroid[i].boundingRect.width, 0, grayImage.width, 0, ofGetWidth() / 2),
@@ -115,6 +140,11 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	
+	if (key == 'f') {
+		ofToggleFullscreen();
+	}
+
 	//32 is the ascii decimal value for the space character
 	if (key == 32) {
 		bLearnBackground = true;
@@ -149,6 +179,36 @@ void ofApp::keyPressed(int key){
 		if (blur_amt != 1)
 			blur_amt -= 2;
 		cout << "blue_amt = " << blur_amt << "\n";
+	}
+
+	if (key == ']') {
+		if (blob_min_area + 50 <= blob_max_area)
+			blob_min_area += 50;
+		cout << "blob_min_area = " << blob_min_area << "\n";
+		
+	}
+
+	if (key == '[') {
+		if (blob_min_area - 50 >= 0) 
+			blob_min_area -= 50;
+		cout << "blob_min_area = " << blob_min_area << "\n";
+	}
+
+	if (key == '}') {
+		blob_max_area += 50;
+		cout << "blob_max_area = " << blob_max_area << "\n";
+	}
+
+	if (key == '{') {
+		if (blob_max_area - 50 >= blob_min_area) 
+			blob_max_area -= 50;
+		cout << "blob_max_area = " << blob_max_area << "\n";
+	}
+
+	//If a number from 0-9 is pressed
+	if (key >= 48 && key <= 57) {
+		blob_max_blobs = (int)key - 48;
+		cout << "blob_max_blobs = " << blob_max_blobs << "\n";
 	}
 }
 
