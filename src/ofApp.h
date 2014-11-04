@@ -1,0 +1,50 @@
+#pragma once
+
+#include "ofMain.h"
+#include "ofxKinectForWindows2.h"
+#include "ofxOpenCv.h"
+
+class ofApp : public ofBaseApp{
+	private:
+		int kWidth;
+		int kHeight;
+		bool bLearnBackground = false;
+		bool first = true;
+		int thresh_low;
+		int thresh_high;
+		int blur_amt;
+	public:
+		void setup();
+		void update();
+		void draw();
+
+		void keyPressed(int key);
+		void keyReleased(int key);
+		void mouseMoved(int x, int y );
+		void mouseDragged(int x, int y, int button);
+		void mousePressed(int x, int y, int button);
+		void mouseReleased(int x, int y, int button);
+		void windowResized(int w, int h);
+		void dragEvent(ofDragInfo dragInfo);
+		void gotMessage(ofMessage msg);
+		
+		ofxKFW2::Device *kinect;
+
+		ofPoint					dest_cam_warp[4];
+		ofPoint					src_cam_warp[4];
+		ofxCvBlob					centroid[10];
+		
+		ofPixels				normalPixels;
+		ofPixels				orig;
+		ofPixels				orig_diff;
+
+		unsigned short *		orig_shorts; //reference
+		unsigned short *		orig_shorts_diff; //deep copy
+
+		ofxCvGrayscaleImage		grayScale;
+		ofxCvGrayscaleImage		grayImage;
+		ofxCvGrayscaleImage		CV_calc;
+		ofxCvGrayscaleImage		CV_diff;
+
+		ofxCvContourFinder		contours;
+};
