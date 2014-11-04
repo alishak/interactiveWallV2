@@ -17,4 +17,6 @@
 (make sure you create the "myApps" folder, if it's not there)
 6. go to the **(OpenFrameworks root)\addons\ofxKinectForWindows2\ofxKinectForWindows2Lib** folder, edit "ofxKinectForWindows2Lib.vcxproj" and modify lines 21, 27 to "<PlatformToolset>v120</PlatformToolset>" (it is v110, which will only compile with Visual Studio 2012)
 
-7. Compile & enjoy!
+7.Compile, you will get an error in the "Proceses.h" file, comments out the three lines causing the error.
+
+8. Compile & enjoy!
