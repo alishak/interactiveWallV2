@@ -12,10 +12,16 @@ class ofApp : public ofBaseApp{
 		bool first = true;
 		int thresh_low;
 		int thresh_high;
+		int thresh_IR_low;
+		int thresh_IR_high;
+
 		int blur_amt;
 		int blob_min_area;
 		int blob_max_area;
 		int blob_max_blobs;
+
+		int blob_IR_min_area;
+		int blob_IR_max_area;
 
 	public:
 		~ofApp();
@@ -32,6 +38,9 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+		void updateDepth();
+		void updateIR();
+		void drawDepth();
 		
 		ofxKFW2::Device *kinect;
 
@@ -49,6 +58,7 @@ class ofApp : public ofBaseApp{
 		ofxCvGrayscaleImage		grayImage;
 		ofxCvGrayscaleImage		CV_calc;
 		ofxCvGrayscaleImage		CV_diff;
+		ofxCvGrayscaleImage			IR_image;
 
 		ofxCvContourFinder		contours;
 };
