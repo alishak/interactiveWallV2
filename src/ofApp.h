@@ -40,7 +40,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		void updateDepth();
 		void updateIR();
-		void drawDepth();
+		void drawDepthIR();
 		
 		ofxKFW2::Device *kinect;
 

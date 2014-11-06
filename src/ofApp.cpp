@@ -4,8 +4,9 @@
 ofApp::~ofApp() {
 	//delete references on exit to prevent any memory leaks
 	delete[] orig_shorts_diff;
-	*orig_shorts = NULL;
-	*orig_shorts_diff = NULL;
+	orig_shorts_diff = NULL;
+	orig_shorts = NULL;
+	
 }
 
 //--------------------------------------------------------------
@@ -17,7 +18,7 @@ void ofApp::setup(){
 	kinect->initInfrared();
 	kinect->initLongExposureInfrared();
 
-	//Hardcoded values after sampling form the kinect
+	//Hardcoded values after sampling from the kinect
 	kWidth = 512;// kinect->getDepth()->getPixelsRef().getWidth();
 	kHeight = 424;// kinect->getDepth()->getPixelsRef().getHeight();
 
@@ -71,7 +72,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	//kinect->getDepth()->draw(0, 0, ofGetWidth() / 2, ofGetHeight()); // note that the depth texture is RAW so may appear dark
-	drawDepth();
+	drawDepthIR();
 	//kinect->getInfrared()->draw(0, 0, ofGetWidth(), ofGetHeight());
 	//kinect->getLongExposureInfrared()->draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	//IR_image.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight());
@@ -141,8 +142,8 @@ void ofApp::keyPressed(int key){
 		*/
 
 		//IR
-		if (blob_IR_min_area + 5 <= blob_IR_max_area)
-			blob_IR_min_area += 5;
+		if (blob_IR_min_area + 20 <= blob_IR_max_area)
+			blob_IR_min_area += 20;
 		cout << "blob_IR_min_area = " << blob_IR_min_area << "\n";
 		
 	}
@@ -156,8 +157,8 @@ void ofApp::keyPressed(int key){
 		*/
 
 		//IR
-		if (blob_IR_min_area - 5 >= 0)
-			blob_IR_min_area -= 5;
+		if (blob_IR_min_area - 20 >= 0)
+			blob_IR_min_area -= 20;
 		cout << "blob_IR_min_area = " << blob_IR_min_area << "\n";
 	}
 
@@ -169,7 +170,7 @@ void ofApp::keyPressed(int key){
 		*/
 
 		//IR
-		blob_IR_max_area += 5;
+		blob_IR_max_area += 20;
 		cout << "blob_IR_max_area = " << blob_IR_max_area << "\n";
 	}
 
@@ -182,8 +183,8 @@ void ofApp::keyPressed(int key){
 		*/
 
 		//IR
-		if (blob_IR_max_area - 5 >= blob_IR_min_area)
-			blob_IR_max_area -= 5;
+		if (blob_IR_max_area - 20 >= blob_IR_min_area)
+			blob_IR_max_area -= 20;
 		cout << "blob_IR_max_area = " << blob_IR_max_area << "\n";
 	}
 
@@ -365,7 +366,7 @@ void ofApp::updateIR() {
 	} 
 }
 
-void ofApp::drawDepth() {
+void ofApp::drawDepthIR() {
 	grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	CV_diff.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight() / 2);
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
