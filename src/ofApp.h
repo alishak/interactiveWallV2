@@ -2,29 +2,11 @@
 
 #include "ofMain.h"
 #include "ofxKinectForWindows2.h"
+#include "Sensors.h"
 #include "ofxOpenCv.h"
 
-class ofApp : public ofBaseApp{
-	private:
-		int kWidth;
-		int kHeight;
-		bool bLearnBackground = false;
-		bool first = true;
-		int thresh_low;
-		int thresh_high;
-		int thresh_IR_low;
-		int thresh_IR_high;
-
-		int blur_amt;
-		int blob_min_area;
-		int blob_max_area;
-		int blob_max_blobs;
-
-		int blob_IR_min_area;
-		int blob_IR_max_area;
-
+class ofApp : public ofBaseApp {
 	public:
-		~ofApp();
 		void setup();
 		void update();
 		void draw();
@@ -43,22 +25,6 @@ class ofApp : public ofBaseApp{
 		void drawDepthIR();
 		
 		ofxKFW2::Device *kinect;
-
-		ofPoint					dest_cam_warp[4];
-		ofPoint					src_cam_warp[4];
-		ofxCvBlob					centroid[10];
-		
-		ofPixels				normalPixels;
-		ofPixels				diffPixels;
-
-		unsigned short *		orig_shorts; //reference
-		unsigned short *		orig_shorts_diff; //deep copy
-
-		ofxCvGrayscaleImage		grayScale;
-		ofxCvGrayscaleImage		grayImage;
-		ofxCvGrayscaleImage		CV_calc;
-		ofxCvGrayscaleImage		CV_diff;
-		ofxCvGrayscaleImage			IR_image;
-
-		ofxCvContourFinder		contours;
+		DepthProc *depth;
+		IRProc *IR;
 };
