@@ -35,7 +35,7 @@ void DepthProc::update(ofxKFW2::Device *kinect) {
 		for (int i = 0; i < kWidth * kHeight; i++) {
 			int valtemp = orig_shorts[i] - orig_shorts_diff[i];
 
-			diffPixels[i] = (unsigned char)ofMap(valtemp, 500, 4000, 0, 255, true);
+			diffPixels[i] = (unsigned char)valtemp;// (unsigned char)ofMap(valtemp, 0, 65536, 0, 255, true);
 			//Debugging info
 			/*
 			if (i < kWidth * kHeight / 1000) {

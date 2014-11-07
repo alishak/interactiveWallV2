@@ -1,5 +1,11 @@
 #include "ofApp.h"
 
+ofApp::~ofApp() {
+	delete kinect;
+	delete depth;
+	delete IR;
+}
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 	//Instantiate the kinect reference
@@ -8,22 +14,25 @@ void ofApp::setup(){
 	kinect->initDepth();
 	kinect->initInfrared();
 	kinect->initLongExposureInfrared();
+
+	depth = new DepthProc();
+	IR = new IRProc();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 	kinect->update();
-	
-	//updateDepth();
-	updateIR();
+	depth->update(kinect);
+	IR->update(kinect);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 	//kinect->getDepth()->draw(0, 0, ofGetWidth() / 2, ofGetHeight()); // note that the depth texture is RAW so may appear dark
-	drawDepthIR();
 	//kinect->getInfrared()->draw(0, 0, ofGetWidth(), ofGetHeight());
 	//kinect->getLongExposureInfrared()->draw(0, 0, ofGetWidth() / 2, ofGetHeight());
+
+	IR->draw();
 }
 
 //--------------------------------------------------------------
@@ -33,6 +42,7 @@ void ofApp::keyPressed(int key){
 		ofToggleFullscreen();
 	}
 
+	IR->keyPressed(key);
 }
 
 //--------------------------------------------------------------

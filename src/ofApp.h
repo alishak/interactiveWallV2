@@ -2,11 +2,13 @@
 
 #include "ofMain.h"
 #include "ofxKinectForWindows2.h"
-#include "Sensors.h"
+#include "DepthProc.h"
+#include "IRProc.h"
 #include "ofxOpenCv.h"
 
 class ofApp : public ofBaseApp {
 	public:
+		~ofApp();
 		void setup();
 		void update();
 		void draw();

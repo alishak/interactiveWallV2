@@ -1,6 +1,6 @@
-#include "Sensors.h"
+#include "KinectSensors.h"
 
-class DepthProc : Sensors {
+class DepthProc : KinectSensors {
 	public:
 		DepthProc();
 		void update(ofxKFW2::Device *);

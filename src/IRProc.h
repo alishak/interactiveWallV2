@@ -1,6 +1,6 @@
-#include "Sensors.h"
+#include "KinectSensors.h"
 
-class IRProc : Sensors {
+class IRProc : public KinectSensors {
 	public:
 		IRProc();
 		void update(ofxKFW2::Device *);
