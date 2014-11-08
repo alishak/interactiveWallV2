@@ -122,7 +122,7 @@ void KinectSensors::drawBlobs() {
 	ofPopStyle();
 }
 
-bool KinectSensors::sampling() {
+bool KinectSensors::sampling(ofxKFW2::Device *kinect) {
 	return (kinect->getInfrared()->getPixels() != NULL);
 }
 
@@ -138,7 +138,7 @@ void KinectSensors::firstReference(ofxKFW2::Device *kinect) {
 	cout << "first!\n";
 }
 
-void KinectSensors::recalibrate() {
+void KinectSensors::recalibrate(ofxKFW2::Device *kinect) {
 	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
 	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
 	bLearnBackground = false;

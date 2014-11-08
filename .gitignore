@@ -2,4 +2,8 @@ bin/
 obj/
 *.sdf
 *.opensdf
-interactiveWallV2.*
+interactiveWallV2.sdf
+interactiveWallV2.v12.suo
+interactiveWallV2.suo
+interactiveWallV2.vcxproj
+interactiveWallV2.vcxproj.filters

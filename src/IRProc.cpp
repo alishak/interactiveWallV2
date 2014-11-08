@@ -13,7 +13,7 @@ IRProc::IRProc() {
 
 void IRProc::update(ofxKFW2::Device *kinect) {
 	//Wait for kinect to start sampling
-	if (sampling()) {
+	if (sampling(kinect)) {
 
 		updatePixels(kinect);
 
