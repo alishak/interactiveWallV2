@@ -41,20 +41,7 @@ void KinectSensors::draw() {
 	CV_diff.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight() / 2);
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
 
-	ofPushStyle();
-	ofSetLineWidth(3);
-	ofSetHexColor(0xFF0000);//Red
-	ofNoFill();
-
-	//Draw all available blobs
-	for (int i = 0; i < contours.blobs.size(); i++) {
-
-		ofRect((ofGetWidth() / 2) + ofMap(centroid[i].boundingRect.x, 0, grayImage.width, 0, ofGetWidth() / 2),
-			(ofGetHeight() / 2) + ofMap(centroid[i].boundingRect.y, 0, grayImage.height, 0, ofGetHeight() / 2),
-			ofMap(centroid[i].boundingRect.width, 0, grayImage.width, 0, ofGetWidth() / 2),
-			ofMap(centroid[i].boundingRect.height, 0, grayImage.height, 0, ofGetHeight() / 2));
-	}
-	ofPopStyle();
+	drawBlobs();	
 }
 
 void KinectSensors::keyPressed(int key) {
@@ -115,5 +102,64 @@ void KinectSensors::keyPressed(int key) {
 	if (key >= 48 && key <= 57) {
 		blob_max_blobs = (int)key - 48;
 		cout << "blob_max_blobs = " << blob_max_blobs << "\n";
+	}
+}
+
+void KinectSensors::drawBlobs() {
+	ofPushStyle();
+	ofSetLineWidth(3);
+	ofSetHexColor(0xFF0000);//Red
+	ofNoFill();
+
+	//Draw all available blobs
+	for (int i = 0; i < contours.blobs.size(); i++) {
+
+		ofRect((ofGetWidth() / 2) + ofMap(centroid[i].boundingRect.x, 0, grayImage.width, 0, ofGetWidth() / 2),
+			(ofGetHeight() / 2) + ofMap(centroid[i].boundingRect.y, 0, grayImage.height, 0, ofGetHeight() / 2),
+			ofMap(centroid[i].boundingRect.width, 0, grayImage.width, 0, ofGetWidth() / 2),
+			ofMap(centroid[i].boundingRect.height, 0, grayImage.height, 0, ofGetHeight() / 2));
+	}
+	ofPopStyle();
+}
+
+bool KinectSensors::sampling() {
+	return (kinect->getInfrared()->getPixels() != NULL);
+}
+
+void KinectSensors::updatePixels(ofxKFW2::Device *kinect) {
+	grayScale.setFromPixels(kinect->getInfrared()->getPixelsRef());
+	orig_shorts = kinect->getInfrared()->getPixels(); //update depth array
+}
+
+void KinectSensors::firstReference(ofxKFW2::Device *kinect) {
+	//Original calibration on start
+	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	first = false;
+	cout << "first!\n";
+}
+
+void KinectSensors::recalibrate() {
+	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
+	bLearnBackground = false;
+}
+
+void KinectSensors::retreiveAndBlur() {
+	//Retreive difference Image
+	CV_diff.setFromPixels(diffPixels);
+
+	//Retreive threshold image
+	CV_calc.setFromPixels(normalPixels);
+	grayImage.warpIntoMe(CV_calc, src_cam_warp, dest_cam_warp);
+
+	//Blur to reduce noise & find blobs of white pixels
+	grayImage.blur(blur_amt);
+}
+
+void KinectSensors::findContours() {
+	contours.findContours(grayImage, blob_min_area, blob_max_area, blob_max_blobs, true, false);
+
+	for (int i = 0; i < contours.blobs.size(); i++) {
+		centroid[i] = contours.blobs[i];
 	}
 }

@@ -35,28 +35,6 @@ void IRProc::update(ofxKFW2::Device *kinect) {
 	}
 }
 
-bool IRProc::sampling() {
-	return (kinect->getInfrared()->getPixels() != NULL);
-}
-
-void IRProc::updatePixels(ofxKFW2::Device *kinect) {
-	grayScale.setFromPixels(kinect->getInfrared()->getPixelsRef());
-	orig_shorts = kinect->getInfrared()->getPixels(); //update depth array
-}
-
-void IRProx::firstReference(ofxKFW2::Device *kinect) {
-	//Original calibration on start
-	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
-	first = false;
-	cout << "first!\n";
-}
-
-void IRProc::recalibrate() {
-	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
-	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
-	bLearnBackground = false;
-}
-
 void IRProc::thresholdDifference() {
 	//Calculate the difference for each pixel and threshold the values
 	for (int i = 0; i < kWidth * kHeight; i++) {
@@ -74,25 +52,5 @@ void IRProc::thresholdDifference() {
 		//save into an ofPixels instance
 		//NOTE: Auto-scaled down to 255 Grayscale values
 		normalPixels[i] = (unsigned char)valtemp;
-	}
-}
-
-void IRProc::retreiveAndBlur() {
-	//Retreive difference Image
-	CV_diff.setFromPixels(diffPixels);
-
-	//Retreive threshold image
-	CV_calc.setFromPixels(normalPixels);
-	grayImage.warpIntoMe(CV_calc, src_cam_warp, dest_cam_warp);
-
-	//Blur to reduce noise & find blobs of white pixels
-	grayImage.blur(blur_amt);
-}
-
-void IRProc::findContours() {
-	contours.findContours(grayImage, blob_min_area, blob_max_area, blob_max_blobs, true, false);
-
-	for (int i = 0; i < contours.blobs.size(); i++) {
-		centroid[i] = contours.blobs[i];
 	}
 }
