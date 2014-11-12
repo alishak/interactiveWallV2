@@ -22,7 +22,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	kinect->update();
-	depth->update(kinect);
+	//depth->update(kinect);
 	IR->update(kinect);
 }
 
