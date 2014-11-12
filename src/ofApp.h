@@ -5,6 +5,8 @@
 #include "DepthProc.h"
 #include "IRProc.h"
 #include "ofxOpenCv.h"
+#include "ofxTuio.h"
+#include "ofxOsc.h"
 
 class ofApp : public ofBaseApp {
 	public:
@@ -25,8 +27,16 @@ class ofApp : public ofBaseApp {
 		void updateDepth();
 		void updateIR();
 		void drawDepthIR();
+
+		void tuioAdded(ofxTuioCursor & tuioCursor);
+		void tuioRemoved(ofxTuioCursor & tuioCursor);
+		void tuioUpdated(ofxTuioCursor & tuioCursor);
 		
 		ofxKFW2::Device *kinect;
 		DepthProc *depth;
 		IRProc *IR;
+
+		ofxTuioClient tuioClient;
+		ofxOscReceiver	receiver;
+		
 };
