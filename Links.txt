@@ -1,0 +1,17 @@
+https://github.com/laserpilot/syphon_CV_contours/blob/master/src/testApp.cpp
+
+https://github.com/patriciogonzalezvivo/ofxBlobTracker
+https://github.com/nuigroup/ccv15
+https://github.com/arturoc/ofxTuioWrapper
+https://github.com/patriciogonzalezvivo/KinectCoreVision
+https://github.com/patriciogonzalezvivo/ofxBlackBox
+
+https://github.com/patriciogonzalezvivo/Communitas
+
+http://social.technet.microsoft.com/wiki/contents/articles/6460.simulating-touch-input-in-windows-8-using-touch-injection-api.aspx
+
+http://msdn.microsoft.com/en-us/library/windows/desktop/hh802898(v=vs.85).aspx
+
+https://touchinjector.codeplex.com/
+
+https://touchproxy.codeplex.com/
