@@ -2,10 +2,11 @@
 
 #include "ofxKinectForWindows2.h"
 #include "ofxOpenCv.h"
+#include "ofxOsc.h"
 
 class KinectSensors {
     private:
-		void drawBlobs();
+		void drawBlobs(float, float, float, float);
 
 	public:
 		KinectSensors();
@@ -21,6 +22,7 @@ class KinectSensors {
 		void recalibrate(ofxKFW2::Device *);
 		void retreiveAndBlur();
 		void findContours();
+		void sendTouch(int);
 
 		int kWidth;
 		int kHeight;
@@ -37,7 +39,6 @@ class KinectSensors {
 
 		ofPoint					dest_cam_warp[4];
 		ofPoint					src_cam_warp[4];
-		ofxCvBlob					centroid[10];
 
 		ofPixels				normalPixels;
 		ofPixels				diffPixels;
@@ -51,4 +52,5 @@ class KinectSensors {
 		ofxCvGrayscaleImage		CV_diff;
 
 		ofxCvContourFinder		contours;
+		ofxOscSender			sender;
 };

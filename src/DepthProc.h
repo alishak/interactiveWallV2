@@ -1,6 +1,6 @@
 #include "KinectSensors.h"
 
-class DepthProc : KinectSensors {
+class DepthProc : public KinectSensors {
 	private:
 		void thresholdDifference();
 		

@@ -1,4 +1,5 @@
 #include "KinectSensors.h"
+#define PORT 12345
 
 KinectSensors::KinectSensors() {
 	//Hardcoded values after sampling from the kinect
@@ -27,6 +28,8 @@ KinectSensors::KinectSensors() {
 
 	//Allocated onto the heap for copying
 	orig_shorts_diff = new unsigned short[kWidth * kHeight];
+
+	sender.setup("localhost", PORT);
 }
 
 KinectSensors::~KinectSensors() {
@@ -37,11 +40,14 @@ KinectSensors::~KinectSensors() {
 }
 
 void KinectSensors::draw() {
-	grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
+	/*grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	CV_diff.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight() / 2);
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
+	drawBlobs(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);*/
 
-	drawBlobs();	
+	//grayImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+	grayScale.draw(0, 0, ofGetWidth(), ofGetHeight());
+	drawBlobs(0, 0, ofGetWidth(), ofGetHeight());
 }
 
 void KinectSensors::keyPressed(int key) {
@@ -105,7 +111,7 @@ void KinectSensors::keyPressed(int key) {
 	}
 }
 
-void KinectSensors::drawBlobs() {
+void KinectSensors::drawBlobs(float origin_x, float origin_y, float size_x, float size_y) {
 	ofPushStyle();
 	ofSetLineWidth(3);
 	ofSetHexColor(0xFF0000);//Red
@@ -113,11 +119,11 @@ void KinectSensors::drawBlobs() {
 
 	//Draw all available blobs
 	for (int i = 0; i < contours.blobs.size(); i++) {
-
-		ofRect((ofGetWidth() / 2) + ofMap(centroid[i].boundingRect.x, 0, grayImage.width, 0, ofGetWidth() / 2),
-			(ofGetHeight() / 2) + ofMap(centroid[i].boundingRect.y, 0, grayImage.height, 0, ofGetHeight() / 2),
-			ofMap(centroid[i].boundingRect.width, 0, grayImage.width, 0, ofGetWidth() / 2),
-			ofMap(centroid[i].boundingRect.height, 0, grayImage.height, 0, ofGetHeight() / 2));
+		ofxCvBlob centroid = contours.blobs[i];
+		ofRect(origin_x + ofMap(centroid.boundingRect.x, 0, grayImage.width, 0, size_x),
+			origin_y + ofMap(centroid.boundingRect.y, 0, grayImage.height, 0, size_y),
+			ofMap(centroid.boundingRect.width, 0, grayImage.width, 0, size_x),
+			ofMap(centroid.boundingRect.height, 0, grayImage.height, 0, size_y));
 	}
 	ofPopStyle();
 }
@@ -158,8 +164,35 @@ void KinectSensors::retreiveAndBlur() {
 
 void KinectSensors::findContours() {
 	contours.findContours(grayImage, blob_min_area, blob_max_area, blob_max_blobs, true, false);
+}
 
-	for (int i = 0; i < contours.blobs.size(); i++) {
-		centroid[i] = contours.blobs[i];
+void KinectSensors::sendTouch(int cursors) {
+	
+	if (contours.blobs.size() == 0) {
+		////cout << "contours = 0\n";
+		//ofxOscMessage message;
+
+		//message.setAddress("/tuio/2Dcur");
+		//message.addStringArg("delete");
+
+		//sender.sendMessage(message);
+	}
+	else {
+		for (int i = 0; i < contours.blobs.size(); i++) {
+			//cout << "x: " << contours.blobs[i].centroid.x << "		y: " << contours.blobs[i].centroid.y << "\n";
+			
+			ofxOscMessage message;
+
+			message.setAddress("/tuio/2Dcur");
+			message.addStringArg("set");
+			message.addIntArg(i);
+			message.addFloatArg(contours.blobs[i].centroid.x / kWidth);
+			message.addFloatArg(contours.blobs[i].centroid.y / kHeight);
+			message.addFloatArg(0);
+			message.addFloatArg(0);
+			message.addFloatArg(0);
+
+			sender.sendMessage(message);
+		}
 	}
 }

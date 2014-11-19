@@ -9,6 +9,8 @@
 #include "ofxOsc.h"
 
 class ofApp : public ofBaseApp {
+	private:
+		bool calibrating = true;
 	public:
 		~ofApp();
 		void setup();
@@ -37,6 +39,4 @@ class ofApp : public ofBaseApp {
 		IRProc *IR;
 
 		ofxTuioClient tuioClient;
-		ofxOscReceiver	receiver;
-		
 };
