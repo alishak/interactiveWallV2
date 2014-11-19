@@ -40,14 +40,14 @@ KinectSensors::~KinectSensors() {
 }
 
 void KinectSensors::draw() {
-	/*grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
+	grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	CV_diff.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight() / 2);
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
-	drawBlobs(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);*/
+	drawBlobs(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
 
 	//grayImage.draw(0, 0, ofGetWidth(), ofGetHeight());
-	grayScale.draw(0, 0, ofGetWidth(), ofGetHeight());
-	drawBlobs(0, 0, ofGetWidth(), ofGetHeight());
+	//grayScale.draw(0, 0, ofGetWidth(), ofGetHeight());
+	//drawBlobs(0, 0, ofGetWidth(), ofGetHeight());
 }
 
 void KinectSensors::keyPressed(int key) {
@@ -166,7 +166,7 @@ void KinectSensors::findContours() {
 	contours.findContours(grayImage, blob_min_area, blob_max_area, blob_max_blobs, true, false);
 }
 
-void KinectSensors::sendTouch(int cursors) {
+void KinectSensors::sendTouch() {
 	
 	if (contours.blobs.size() == 0) {
 		////cout << "contours = 0\n";
@@ -185,7 +185,7 @@ void KinectSensors::sendTouch(int cursors) {
 
 			message.setAddress("/tuio/2Dcur");
 			message.addStringArg("set");
-			message.addIntArg(i);
+			message.addIntArg(i+1);
 			message.addFloatArg(contours.blobs[i].centroid.x / kWidth);
 			message.addFloatArg(contours.blobs[i].centroid.y / kHeight);
 			message.addFloatArg(0);
@@ -196,3 +196,55 @@ void KinectSensors::sendTouch(int cursors) {
 		}
 	}
 }
+
+//void KinectSensors::injectTouch(int x, int y) {
+	/*
+	POINTER_TOUCH_INFO contact;
+	BOOL bRet = TRUE;
+
+	//
+	// assume a maximum of 10 contacts and turn touch feedback off
+	//
+	InitializeTouchInjection(10, TOUCH_FEEDBACK_NONE);
+
+	//
+	// initialize the touch info structure
+	//
+	memset(&contact, 0, sizeof(POINTER_TOUCH_INFO));
+
+	contact.pointerInfo.pointerType = PT_TOUCH; //we're sending touch input
+	contact.pointerInfo.pointerId = 0;          //contact 0
+	contact.pointerInfo.ptPixelLocation.x = x * ofGetWidth();
+	contact.pointerInfo.ptPixelLocation.y = y * ofGetHeight();
+	contact.pointerInfo.pointerFlags = POINTER_FLAG_DOWN | POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT;
+	contact.touchFlags = TOUCH_FLAG_NONE;
+	contact.touchMask = TOUCH_MASK_CONTACTAREA | TOUCH_MASK_ORIENTATION | TOUCH_MASK_PRESSURE;
+	contact.orientation = 90;
+	contact.pressure = 32000;
+
+	//
+	// set the contact area depending on thickness
+	//
+	contact.rcContact.top = 480 - 2;
+	contact.rcContact.bottom = 480 + 2;
+	contact.rcContact.left = 640 - 2;
+	contact.rcContact.right = 640 + 2;
+
+	//
+	// inject a touch down
+	//
+	bRet = InjectTouchInput(1, &contact);
+
+	//
+	// if touch down was succesfull, send a touch up
+	//
+	if (bRet) {
+		contact.pointerInfo.pointerFlags = POINTER_FLAG_UP;
+
+		//
+		// inject a touch up
+		//
+		//InjectTouchInput(1, &contact);
+	}
+	*/
+//}

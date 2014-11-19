@@ -7,7 +7,7 @@
 class KinectSensors {
     private:
 		void drawBlobs(float, float, float, float);
-
+		//void injectTouch(int, int);
 	public:
 		KinectSensors();
 		~KinectSensors();
@@ -22,7 +22,7 @@ class KinectSensors {
 		void recalibrate(ofxKFW2::Device *);
 		void retreiveAndBlur();
 		void findContours();
-		void sendTouch(int);
+		void sendTouch();
 
 		int kWidth;
 		int kHeight;

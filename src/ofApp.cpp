@@ -22,17 +22,17 @@ void ofApp::setup(){
 	ofAddListener(tuioClient.cursorRemoved, this, &ofApp::tuioRemoved);
 	ofAddListener(tuioClient.cursorUpdated, this, &ofApp::tuioUpdated);
 	
-	tuioClient.start();
+	//tuioClient.start();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 	kinect->update();
 	//depth->update(kinect);
-	IR->update(kinect, tuioClient.getTuioCursors().size());
+	IR->update(kinect);
 
 	//if (!calibrating) {
-		tuioClient.getMessage();
+		//tuioClient.getMessage();
 	//}
 	//else {
 		
@@ -48,7 +48,7 @@ void ofApp::draw(){
 	IR->draw();
 
 	//if (!calibrating) {
-		tuioClient.drawCursors();
+		//tuioClient.drawCursors();
 	//}
 	//else {
 

@@ -5,5 +5,5 @@ class IRProc : public KinectSensors {
 		void thresholdDifference();
 	public:
 		IRProc();
-		void update(ofxKFW2::Device *, int);
+		void update(ofxKFW2::Device *);
 };

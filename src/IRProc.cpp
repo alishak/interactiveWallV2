@@ -8,10 +8,10 @@ IRProc::IRProc() {
 	blur_amt = 3;
 	blob_min_area = 100;
 	blob_max_area = 300;
-	blob_max_blobs = 1;
+	blob_max_blobs = 2;
 }
 
-void IRProc::update(ofxKFW2::Device *kinect, int cursors) {
+void IRProc::update(ofxKFW2::Device *kinect) {
 	//Wait for kinect to start sampling
 	if (sampling(kinect)) {
 
@@ -33,7 +33,7 @@ void IRProc::update(ofxKFW2::Device *kinect, int cursors) {
 
 		findContours();
 
-		sendTouch(cursors);
+		sendTouch();
 	}
 }
 
