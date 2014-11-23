@@ -1,4 +1,9 @@
-bin/
+bin/*.dll
+bin/*.exe
+bin/*.exp
+bin/*.ilk
+bin/*.lib
+bin/*.pdb
 obj/
 *.sdf
 *.opensdf

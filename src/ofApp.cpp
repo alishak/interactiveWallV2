@@ -18,9 +18,9 @@ void ofApp::setup(){
 	depth = new DepthProc();
 	IR = new IRProc();
 
-	ofAddListener(tuioClient.cursorAdded, this, &ofApp::tuioAdded);
-	ofAddListener(tuioClient.cursorRemoved, this, &ofApp::tuioRemoved);
-	ofAddListener(tuioClient.cursorUpdated, this, &ofApp::tuioUpdated);
+	//ofAddListener(tuioClient.cursorAdded, this, &ofApp::tuioAdded);
+	//ofAddListener(tuioClient.cursorRemoved, this, &ofApp::tuioRemoved);
+	//ofAddListener(tuioClient.cursorUpdated, this, &ofApp::tuioUpdated);
 	
 	//tuioClient.start();
 }
@@ -106,6 +106,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
+/*
 void ofApp::tuioAdded(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight());
 	cout << "Point n" << tuioCursor.getSessionId() << " add at " << loc << endl;
@@ -120,3 +121,4 @@ void ofApp::tuioRemoved(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight());
 	cout << "Point n" << tuioCursor.getSessionId() << " remove at " << loc << endl;
 }
+*/

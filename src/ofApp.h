@@ -9,8 +9,6 @@
 #include "ofxOsc.h"
 
 class ofApp : public ofBaseApp {
-	private:
-		bool calibrating = true;
 	public:
 		~ofApp();
 		void setup();
@@ -30,13 +28,15 @@ class ofApp : public ofBaseApp {
 		void updateIR();
 		void drawDepthIR();
 
+		/*
 		void tuioAdded(ofxTuioCursor & tuioCursor);
 		void tuioRemoved(ofxTuioCursor & tuioCursor);
 		void tuioUpdated(ofxTuioCursor & tuioCursor);
-		
+		*/
+
 		ofxKFW2::Device *kinect;
 		DepthProc *depth;
 		IRProc *IR;
 
-		ofxTuioClient tuioClient;
+		//ofxTuioClient tuioClient;
 };

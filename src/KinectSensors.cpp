@@ -30,6 +30,12 @@ KinectSensors::KinectSensors() {
 	orig_shorts_diff = new unsigned short[kWidth * kHeight];
 
 	sender.setup("localhost", PORT);
+
+	corner = 1;
+	red.loadImage("red.png");
+	green.loadImage("green.png");
+	cross_x = 0;
+	cross_y = 0;
 }
 
 KinectSensors::~KinectSensors() {
@@ -40,14 +46,18 @@ KinectSensors::~KinectSensors() {
 }
 
 void KinectSensors::draw() {
+	/*
 	grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	CV_diff.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight() / 2);
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
 	drawBlobs(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
-
-	//grayImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+	*/
+	
 	//grayScale.draw(0, 0, ofGetWidth(), ofGetHeight());
-	//drawBlobs(0, 0, ofGetWidth(), ofGetHeight());
+	
+	grayImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+	drawBlobs(0, 0, ofGetWidth(), ofGetHeight());
+	if(calibrating) drawCrosshair();
 }
 
 void KinectSensors::keyPressed(int key) {
@@ -76,13 +86,13 @@ void KinectSensors::keyPressed(int key) {
 		cout << "ThesholdLow = " << thresh_low << "\n"; break;
 
 	case '>':
-		blur_amt += 2;
-		cout << "blur_amt = " << blur_amt << "\n"; break;
+		//blur_amt += 2;
+		//cout << "blur_amt = " << blur_amt << "\n"; break;
 
 	case '<':
-		if (blur_amt != 1)
-			blur_amt -= 2;
-		cout << "blue_amt = " << blur_amt << "\n"; break;
+		//if (blur_amt != 1)
+			//blur_amt -= 2;
+		//cout << "blue_amt = " << blur_amt << "\n"; break;
 
 	case ']':
 		if (blob_min_area + 20 <= blob_max_area)
@@ -112,12 +122,14 @@ void KinectSensors::keyPressed(int key) {
 }
 
 void KinectSensors::drawBlobs(float origin_x, float origin_y, float size_x, float size_y) {
+	/*
 	ofPushStyle();
 	ofSetLineWidth(3);
 	ofSetHexColor(0xFF0000);//Red
 	ofNoFill();
 
 	//Draw all available blobs
+	
 	for (int i = 0; i < contours.blobs.size(); i++) {
 		ofxCvBlob centroid = contours.blobs[i];
 		ofRect(origin_x + ofMap(centroid.boundingRect.x, 0, grayImage.width, 0, size_x),
@@ -125,9 +137,42 @@ void KinectSensors::drawBlobs(float origin_x, float origin_y, float size_x, floa
 			ofMap(centroid.boundingRect.width, 0, grayImage.width, 0, size_x),
 			ofMap(centroid.boundingRect.height, 0, grayImage.height, 0, size_y));
 	}
-	ofPopStyle();
+	ofPopStyle();*/
+
+	blobTracker.draw(origin_x, origin_y, size_x, size_y);
 }
 
+void::KinectSensors::drawCrosshair() {
+	int length = ofGetWidth() / 8;
+	int x, y;
+
+	switch (corner) {
+
+	case 1: cross_y = 0;
+		x = cross_x - length / 2 + 5;
+		y = cross_y - length / 2 + 5;
+		break;
+	case 2: cross_x = ofGetWidth();
+		x = cross_x - length / 2 - 5;
+		y = cross_y - length / 2 + 5;
+		break;
+	case 3: cross_y = ofGetHeight();
+		x = cross_x - length / 2 + 5;
+		y = cross_y - length / 2 - 5;
+		break;
+	case 4: cross_x = 0;
+		x = cross_x - length / 2 + 5;
+		y = cross_y - length / 2 - 5;
+		break;
+	}
+
+	if (color == RED) {
+		red.draw(x, y, length, length);
+	}
+	else if(color == GREEN) {
+		green.draw(x, y, length, length);
+	}
+}
 bool KinectSensors::sampling(ofxKFW2::Device *kinect) {
 	return (kinect->getInfrared()->getPixels() != NULL);
 }
@@ -159,15 +204,17 @@ void KinectSensors::retreiveAndBlur() {
 	grayImage.warpIntoMe(CV_calc, src_cam_warp, dest_cam_warp);
 
 	//Blur to reduce noise & find blobs of white pixels
-	grayImage.blur(blur_amt);
+	grayImage.erode();	
+	//grayImage.dilate();
 }
 
 void KinectSensors::findContours() {
-	contours.findContours(grayImage, blob_min_area, blob_max_area, blob_max_blobs, true, false);
+	//contours.findContours(grayImage, blob_min_area, blob_max_area, blob_max_blobs, true, false);
+	blobTracker.update(grayImage, -1, blob_min_area, blob_max_area, blob_max_blobs);
 }
 
 void KinectSensors::sendTouch() {
-	
+	/*
 	if (contours.blobs.size() == 0) {
 		////cout << "contours = 0\n";
 		//ofxOscMessage message;
@@ -177,74 +224,42 @@ void KinectSensors::sendTouch() {
 
 		//sender.sendMessage(message);
 	}
-	else {
-		for (int i = 0; i < contours.blobs.size(); i++) {
+	else {*/
+		ofxOscBundle bundle;
+		ofxOscMessage alive;
+		ofxOscMessage fseq;
+
+		for (int i = 0; i < blobTracker.size(); i++) {
 			//cout << "x: " << contours.blobs[i].centroid.x << "		y: " << contours.blobs[i].centroid.y << "\n";
+
+			ofxOscMessage set;
+			set.setAddress("/tuio/2Dcur"); 
+			set.addStringArg("set");
+			set.addIntArg(blobTracker[i].id); //s_id
+			set.addFloatArg(blobTracker[i].centroid.x); //xpos
+			set.addFloatArg(blobTracker[i].centroid.y); //ypos
+			set.addFloatArg(blobTracker[i].D.x); //xspeed
+			set.addFloatArg(blobTracker[i].D.y); //yspeed
+			set.addFloatArg(blobTracker[i].maccel); //maccel
 			
-			ofxOscMessage message;
-
-			message.setAddress("/tuio/2Dcur");
-			message.addStringArg("set");
-			message.addIntArg(i+1);
-			message.addFloatArg(contours.blobs[i].centroid.x / kWidth);
-			message.addFloatArg(contours.blobs[i].centroid.y / kHeight);
-			message.addFloatArg(0);
-			message.addFloatArg(0);
-			message.addFloatArg(0);
-
-			sender.sendMessage(message);
+			//sender.sendMessage(set);
+			bundle.addMessage(set);
+			alive.addIntArg(blobTracker[i].id);
 		}
-	}
+
+		alive.setAddress("/tuio/2Dcur");
+		alive.addStringArg("alive");
+		//sender.sendMessage(alive);
+
+		fseq.setAddress("/tuio/2Dcur");
+		fseq.addStringArg("fseq");
+		fseq.addIntArg(frame);
+		//sender.sendMessage(fseq);
+
+		bundle.addMessage(alive);
+		bundle.addMessage(fseq);
+
+		sender.sendBundle(bundle);
+
+		frame += 1;
 }
-
-//void KinectSensors::injectTouch(int x, int y) {
-	/*
-	POINTER_TOUCH_INFO contact;
-	BOOL bRet = TRUE;
-
-	//
-	// assume a maximum of 10 contacts and turn touch feedback off
-	//
-	InitializeTouchInjection(10, TOUCH_FEEDBACK_NONE);
-
-	//
-	// initialize the touch info structure
-	//
-	memset(&contact, 0, sizeof(POINTER_TOUCH_INFO));
-
-	contact.pointerInfo.pointerType = PT_TOUCH; //we're sending touch input
-	contact.pointerInfo.pointerId = 0;          //contact 0
-	contact.pointerInfo.ptPixelLocation.x = x * ofGetWidth();
-	contact.pointerInfo.ptPixelLocation.y = y * ofGetHeight();
-	contact.pointerInfo.pointerFlags = POINTER_FLAG_DOWN | POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT;
-	contact.touchFlags = TOUCH_FLAG_NONE;
-	contact.touchMask = TOUCH_MASK_CONTACTAREA | TOUCH_MASK_ORIENTATION | TOUCH_MASK_PRESSURE;
-	contact.orientation = 90;
-	contact.pressure = 32000;
-
-	//
-	// set the contact area depending on thickness
-	//
-	contact.rcContact.top = 480 - 2;
-	contact.rcContact.bottom = 480 + 2;
-	contact.rcContact.left = 640 - 2;
-	contact.rcContact.right = 640 + 2;
-
-	//
-	// inject a touch down
-	//
-	bRet = InjectTouchInput(1, &contact);
-
-	//
-	// if touch down was succesfull, send a touch up
-	//
-	if (bRet) {
-		contact.pointerInfo.pointerFlags = POINTER_FLAG_UP;
-
-		//
-		// inject a touch up
-		//
-		//InjectTouchInput(1, &contact);
-	}
-	*/
-//}

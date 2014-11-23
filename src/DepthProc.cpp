@@ -5,7 +5,7 @@ DepthProc::DepthProc() {
 	thresh_low = 60;
 	thresh_high = 150;
 
-	blur_amt = 3;
+//	blur_amt = 3;
 	blob_min_area = 50;
 	blob_max_area = 700;
 	blob_max_blobs = 3;

@@ -85,6 +85,12 @@
     <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\posix\NetworkingUtils.cpp">
       <Filter>addons\ofxOsc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxBlobTracker\src\ofxContourFinder.cpp">
+      <Filter>addons\ofxBlobTracker\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxBlobTracker\src\ofxBlobTracker.cpp">
+      <Filter>addons\ofxBlobTracker\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -182,6 +188,12 @@
     </Filter>
     <Filter Include="addons\ofxOsc">
       <UniqueIdentifier>{d23151f2-762d-4500-b652-a33483c6bac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxBlobTracker">
+      <UniqueIdentifier>{2cf184ae-42e3-4ccf-aad1-f25c84c5ea6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxBlobTracker\src">
+      <UniqueIdentifier>{51f92a17-1b01-4406-82c5-afc29e905c68}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -781,6 +793,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\NetworkingUtils.h">
       <Filter>addons\ofxOsc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxBlobTracker\src\ofxContourFinder.h">
+      <Filter>addons\ofxBlobTracker\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxBlobTracker\src\ofxBlob.h">
+      <Filter>addons\ofxBlobTracker\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxBlobTracker\src\ofxBlobTracker.h">
+      <Filter>addons\ofxBlobTracker\src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
