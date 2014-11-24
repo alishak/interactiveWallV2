@@ -3,7 +3,7 @@
 ofApp::~ofApp() {
 	delete kinect;
 	delete depth;
-	delete IR;
+	//delete IR;
 }
 
 //--------------------------------------------------------------
@@ -11,11 +11,11 @@ void ofApp::setup(){
 	//Instantiate the kinect reference
 	kinect = new ofxKFW2::Device;
 	kinect->open();
-	kinect->initDepth();
+	//kinect->initDepth();
 	kinect->initInfrared();
-	kinect->initLongExposureInfrared();
+	//kinect->initLongExposureInfrared();
 
-	depth = new DepthProc();
+	//depth = new DepthProc();
 	IR = new IRProc();
 
 	//ofAddListener(tuioClient.cursorAdded, this, &ofApp::tuioAdded);
@@ -46,6 +46,7 @@ void ofApp::draw(){
 	//kinect->getLongExposureInfrared()->draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	
 	IR->draw();
+	//depth->draw();
 
 	//if (!calibrating) {
 		//tuioClient.drawCursors();

@@ -46,18 +46,20 @@ KinectSensors::~KinectSensors() {
 }
 
 void KinectSensors::draw() {
-	/*
+	
 	grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	CV_diff.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight() / 2);
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
 	drawBlobs(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
-	*/
+	
 	
 	//grayScale.draw(0, 0, ofGetWidth(), ofGetHeight());
-	
+	/*
 	grayImage.draw(0, 0, ofGetWidth(), ofGetHeight());
 	drawBlobs(0, 0, ofGetWidth(), ofGetHeight());
+	*/
 	if(calibrating) drawCrosshair();
+	
 }
 
 void KinectSensors::keyPressed(int key) {
@@ -68,21 +70,21 @@ void KinectSensors::keyPressed(int key) {
 		bLearnBackground = true; break;
 
 	case '+':		
-		thresh_high += 5;
+		thresh_high += 10;
 		cout << "ThesholdHigh = " << thresh_high << "\n"; break;
 
 	case '_':
-		if (thresh_high - 5 >= thresh_low)
-			thresh_high -= 5;
+		if (thresh_high - 10 >= thresh_low)
+			thresh_high -= 10;
 		cout << "ThesholdHigh = " << thresh_high << "\n"; break;
 
 	case '=':
-		if (thresh_low + 5 <= thresh_high)
-			thresh_low += 5;
+		if (thresh_low + 10 <= thresh_high)
+			thresh_low += 10;
 		cout << "ThesholdLow = " << thresh_low << "\n"; break;
 
 	case '-':
-		thresh_low -= 5;
+		thresh_low -= 10;
 		cout << "ThesholdLow = " << thresh_low << "\n"; break;
 
 	case '>':
@@ -106,7 +108,7 @@ void KinectSensors::keyPressed(int key) {
 
 	case '}':
 		blob_max_area += 20;
-		cout << "blob_IR_max_area = " << blob_max_area << "\n"; break;
+		cout << "blob_max_area = " << blob_max_area << "\n"; break;
 
 	case '{':
 		if (blob_max_area - 20 >= blob_min_area)
@@ -175,24 +177,45 @@ void::KinectSensors::drawCrosshair() {
 }
 bool KinectSensors::sampling(ofxKFW2::Device *kinect) {
 	return (kinect->getInfrared()->getPixels() != NULL);
+	//return (kinect->getDepth()->getPixels() != NULL);
 }
 
 void KinectSensors::updatePixels(ofxKFW2::Device *kinect) {
 	grayScale.setFromPixels(kinect->getInfrared()->getPixelsRef());
 	orig_shorts = kinect->getInfrared()->getPixels(); //update depth array
+
+	//grayScale.setFromPixels(kinect->getDepth()->getPixelsRef());
+	//orig_shorts = kinect->getDepth()->getPixels(); //update depth array
 }
 
 void KinectSensors::firstReference(ofxKFW2::Device *kinect) {
+	//IR
 	//Original calibration on start
 	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
 	first = false;
 	cout << "first!\n";
+	
+
+	/*
+	//Depth
+	memcpy(orig_shorts_diff, kinect->getDepth()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	first = false;
+	cout << "first!\n";
+	*/
 }
 
 void KinectSensors::recalibrate(ofxKFW2::Device *kinect) {
+	 //IR
 	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
 	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
 	bLearnBackground = false;
+	
+
+	/*Depth
+	memcpy(orig_shorts_diff, kinect->getDepth()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
+	bLearnBackground = false;
+	*/
 }
 
 void KinectSensors::retreiveAndBlur() {

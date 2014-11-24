@@ -2,12 +2,12 @@
 
 IRProc::IRProc() {
 	//Modifiable attributes
-	thresh_low = 650;
-	thresh_high = 2000;
+	thresh_low = 250;
+	thresh_high = 1000;
 
 	//blur_amt = 1;
-	blob_min_area = 40;
-	blob_max_area = 200;
+	blob_min_area = 60;
+	blob_max_area = 2000;
 	blob_max_blobs = 2;
 }
 
@@ -33,7 +33,7 @@ void IRProc::update(ofxKFW2::Device *kinect) {
 
 		findContours();
 
-		//sendTouch();
+		sendTouch();
 	}
 	
 	if (calibrating) {
@@ -80,7 +80,8 @@ void IRProc::thresholdDifference() {
 	for (int i = 0; i < kWidth * kHeight; i++) {
 		int valtemp = orig_shorts[i] - orig_shorts_diff[i];
 		
-		diffPixels[i] = (unsigned char)(valtemp <= 400 ? 0 : ofMap(valtemp, 401, 1000, 0, 255, true));
+		diffPixels[i] = (unsigned char)abs(valtemp);// (valtemp <= 400 ? 0 : ofMap(valtemp, 401, 1000, 0, 255, true));
+		
 		
 		//int scaled_diff = ofMap(valtemp, 500, 4000, 0, 1000, true);
 		if (valtemp > thresh_low && valtemp < thresh_high) {
@@ -89,8 +90,22 @@ void IRProc::thresholdDifference() {
 		else {
 			valtemp = 0;
 		}
+		/*
+		int diffval = valtemp;// diffPixels[i];
+		if (diffval > thresh_low) {// && diffval < thresh_high) {
+			diffval = 0;
+		}
+		else {
+			diffval = 1000;
+		}*/
+
+		/*
+		if ( (i % kWidth > kHeight / 2 - kWidth / 7 && i % kWidth < kHeight / 2 + kWidth / 7)
+			&& (i % kHeight > kWidth / 2 - kHeight / 5 && i % kHeight < kWidth / 2 + kHeight / 5 )) {
+			valtemp = 1000;
+		}*/
 		//save into an ofPixels instance
 		//NOTE: Auto-scaled down to 255 Grayscale values
-		normalPixels[i] = (unsigned char)valtemp;
+		normalPixels[i] = (unsigned char)valtemp; //diffval;
 	}
 }
