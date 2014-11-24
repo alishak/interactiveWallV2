@@ -70,9 +70,11 @@ class KinectSensors {
 		int						lastID = -1;
 		unsigned long long		startTime;
 		unsigned long long		elapsedTime;
+		unsigned long long		lastMessage = 0;
 		bool					calibrating = true;
 		bool					inCrosshair = false;
-
+		int						last_size = 0;
+		int						message_rate = 50;
 		enum COLOR { RED, GREEN };
 		COLOR color = RED;
 };

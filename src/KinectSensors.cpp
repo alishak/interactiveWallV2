@@ -46,18 +46,18 @@ KinectSensors::~KinectSensors() {
 }
 
 void KinectSensors::draw() {
-	
+	/*
 	grayScale.draw(0, 0, ofGetWidth() / 2, ofGetHeight());
 	CV_diff.draw(ofGetWidth() / 2, 0, ofGetWidth() / 2, ofGetHeight() / 2);
 	grayImage.draw(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
 	drawBlobs(ofGetWidth() / 2, ofGetHeight() / 2, ofGetWidth() / 2, ofGetHeight() / 2);
-	
+	*/
 	
 	//grayScale.draw(0, 0, ofGetWidth(), ofGetHeight());
-	/*
+	
 	grayImage.draw(0, 0, ofGetWidth(), ofGetHeight());
 	drawBlobs(0, 0, ofGetWidth(), ofGetHeight());
-	*/
+	
 	if(calibrating) drawCrosshair();
 	
 }
@@ -238,27 +238,26 @@ void KinectSensors::findContours() {
 
 void KinectSensors::sendTouch() {
 	/*
-	if (contours.blobs.size() == 0) {
-		////cout << "contours = 0\n";
-		//ofxOscMessage message;
-
-		//message.setAddress("/tuio/2Dcur");
-		//message.addStringArg("delete");
-
-		//sender.sendMessage(message);
+	if (last_size == 0) {
+		message_rate = 75;
 	}
-	else {*/
+	else {
+		message_rate = 50;
+	}*/
+
+	//send every 50 ms to not overload the touch reciever
+	if (ofGetElapsedTimeMillis() - lastMessage > message_rate) {
 		ofxOscBundle bundle;
 		ofxOscMessage alive;
 		ofxOscMessage fseq;
 
 		alive.setAddress("/tuio/2Dcur");
 		alive.addStringArg("alive");
-		
+
 		for (int i = 0; i < blobTracker.size(); i++) {
 			alive.addIntArg(blobTracker[i].id);
 		}
-
+		
 		sender.sendMessage(alive);
 		//bundle.addMessage(alive);
 
@@ -266,7 +265,7 @@ void KinectSensors::sendTouch() {
 			//cout << "x: " << contours.blobs[i].centroid.x << "		y: " << contours.blobs[i].centroid.y << "\n";
 
 			ofxOscMessage set;
-			set.setAddress("/tuio/2Dcur"); 
+			set.setAddress("/tuio/2Dcur");
 			set.addStringArg("set");
 			set.addIntArg(blobTracker[i].id); //s_id
 			set.addFloatArg(blobTracker[i].centroid.x); //xpos
@@ -274,7 +273,7 @@ void KinectSensors::sendTouch() {
 			set.addFloatArg(blobTracker[i].D.x); //xspeed
 			set.addFloatArg(blobTracker[i].D.y); //yspeed
 			set.addFloatArg(blobTracker[i].maccel); //maccel
-			
+
 			sender.sendMessage(set);
 			//bundle.addMessage(set);
 		}
@@ -282,12 +281,14 @@ void KinectSensors::sendTouch() {
 		fseq.setAddress("/tuio/2Dcur");
 		fseq.addStringArg("fseq");
 		fseq.addIntArg(frame);
+
 		sender.sendMessage(fseq);
 
-		
 		//bundle.addMessage(fseq);
 
 		//sender.sendBundle(bundle);
-
+		lastMessage = ofGetElapsedTimeMillis();
+		last_size = blobTracker.size();
 		frame += 1;
+	}
 }

@@ -2,8 +2,8 @@
 //https://github.com/patriciogonzalezvivo/ofxBlobTracker
 ofApp::~ofApp() {
 	delete kinect;
-	delete depth;
-	//delete IR;
+	//delete depth;
+	delete IR;
 }
 
 //--------------------------------------------------------------
