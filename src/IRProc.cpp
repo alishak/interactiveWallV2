@@ -70,6 +70,7 @@ void IRProc::update(ofxKFW2::Device *kinect) {
 		if (corner == 5) {
 			calibrating = false;
 			memcpy(src_cam_warp, temp_dest, 4 * sizeof(ofPoint));
+			thresh_low = 400;
 		}
 	
 	}

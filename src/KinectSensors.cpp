@@ -252,6 +252,16 @@ void KinectSensors::sendTouch() {
 		ofxOscMessage alive;
 		ofxOscMessage fseq;
 
+		alive.setAddress("/tuio/2Dcur");
+		alive.addStringArg("alive");
+		
+		for (int i = 0; i < blobTracker.size(); i++) {
+			alive.addIntArg(blobTracker[i].id);
+		}
+
+		sender.sendMessage(alive);
+		//bundle.addMessage(alive);
+
 		for (int i = 0; i < blobTracker.size(); i++) {
 			//cout << "x: " << contours.blobs[i].centroid.x << "		y: " << contours.blobs[i].centroid.y << "\n";
 
@@ -265,24 +275,19 @@ void KinectSensors::sendTouch() {
 			set.addFloatArg(blobTracker[i].D.y); //yspeed
 			set.addFloatArg(blobTracker[i].maccel); //maccel
 			
-			//sender.sendMessage(set);
-			bundle.addMessage(set);
-			alive.addIntArg(blobTracker[i].id);
+			sender.sendMessage(set);
+			//bundle.addMessage(set);
 		}
-
-		alive.setAddress("/tuio/2Dcur");
-		alive.addStringArg("alive");
-		//sender.sendMessage(alive);
 
 		fseq.setAddress("/tuio/2Dcur");
 		fseq.addStringArg("fseq");
 		fseq.addIntArg(frame);
-		//sender.sendMessage(fseq);
+		sender.sendMessage(fseq);
 
-		bundle.addMessage(alive);
-		bundle.addMessage(fseq);
+		
+		//bundle.addMessage(fseq);
 
-		sender.sendBundle(bundle);
+		//sender.sendBundle(bundle);
 
 		frame += 1;
 }
