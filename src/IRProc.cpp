@@ -110,3 +110,25 @@ void IRProc::thresholdDifference() {
 		normalPixels[i] = (unsigned char)valtemp; //diffval;
 	}
 }
+
+bool IRProc::sampling(ofxKFW2::Device *kinect) {
+	return (kinect->getInfrared()->getPixels() != NULL);
+}
+
+void IRProc::updatePixels(ofxKFW2::Device *kinect) {
+	grayScale.setFromPixels(kinect->getInfrared()->getPixelsRef());
+	orig_shorts = kinect->getInfrared()->getPixels(); //update depth array
+}
+
+void IRProc::firstReference(ofxKFW2::Device *kinect) {
+	//Original calibration on start
+	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	first = false;
+	cout << "first!\n";
+}
+
+void IRProc::recalibrate(ofxKFW2::Device *kinect) {
+	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
+	bLearnBackground = false;
+}

@@ -110,3 +110,24 @@ void DepthProc::thresholdDifference() {
 			normalPixels[i] = (unsigned char)valtemp;
 		}
 }
+
+bool DepthProc::sampling(ofxKFW2::Device *kinect) {
+	return (kinect->getDepth()->getPixels() != NULL);
+}
+
+void DepthProc::updatePixels(ofxKFW2::Device *kinect) {
+	grayScale.setFromPixels(kinect->getDepth()->getPixelsRef());
+	orig_shorts = kinect->getDepth()->getPixels(); //update depth array
+}
+
+void DepthProc::firstReference(ofxKFW2::Device *kinect) {
+	memcpy(orig_shorts_diff, kinect->getDepth()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	first = false;
+	cout << "first!\n";
+}
+
+void DepthProc::recalibrate(ofxKFW2::Device *kinect) {
+	memcpy(orig_shorts_diff, kinect->getDepth()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
+	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
+	bLearnBackground = false;
+}

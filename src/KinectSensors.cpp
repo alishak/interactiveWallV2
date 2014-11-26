@@ -175,48 +175,6 @@ void::KinectSensors::drawCrosshair() {
 		green.draw(x, y, length, length);
 	}
 }
-bool KinectSensors::sampling(ofxKFW2::Device *kinect) {
-	return (kinect->getInfrared()->getPixels() != NULL);
-	//return (kinect->getDepth()->getPixels() != NULL);
-}
-
-void KinectSensors::updatePixels(ofxKFW2::Device *kinect) {
-	grayScale.setFromPixels(kinect->getInfrared()->getPixelsRef());
-	orig_shorts = kinect->getInfrared()->getPixels(); //update depth array
-
-	//grayScale.setFromPixels(kinect->getDepth()->getPixelsRef());
-	//orig_shorts = kinect->getDepth()->getPixels(); //update depth array
-}
-
-void KinectSensors::firstReference(ofxKFW2::Device *kinect) {
-	//IR
-	//Original calibration on start
-	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
-	first = false;
-	cout << "first!\n";
-	
-
-	/*
-	//Depth
-	memcpy(orig_shorts_diff, kinect->getDepth()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
-	first = false;
-	cout << "first!\n";
-	*/
-}
-
-void KinectSensors::recalibrate(ofxKFW2::Device *kinect) {
-	 //IR
-	memcpy(orig_shorts_diff, kinect->getInfrared()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
-	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
-	bLearnBackground = false;
-	
-
-	/*Depth
-	memcpy(orig_shorts_diff, kinect->getDepth()->getPixels(), kWidth * kHeight * sizeof(unsigned short));
-	ofLog(OF_LOG_NOTICE, "Pixels Captured!");
-	bLearnBackground = false;
-	*/
-}
 
 void KinectSensors::retreiveAndBlur() {
 	//Retreive difference Image
