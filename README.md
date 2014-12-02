@@ -7,7 +7,7 @@
 - Kinect V2 SDK: http://www.microsoft.com/en-us/download/details.aspx?id=44561
 - Visual Studio 2013 (full or express verison)
 - ofxBlobTracker (CCV blob tracking): https://github.com/patriciogonzalezvivo/ofxBlobTracker
-- ofxTuio (optiona TUIO Client): https://github.com/patriciogonzalezvivo/ofxTuio
+- ofxTuio (optional TUIO Client): https://github.com/patriciogonzalezvivo/ofxTuio
 
 ### To set up and compile project
 
@@ -23,3 +23,10 @@
 8. Compile, you will get an error in the "Proceses.h" file, comments out the three lines causing the error.
 
 9. Compile & enjoy!
+
+### Receive Touch Events on Windows 8/8.1
+
+This program currently sends OSC messages of recognize touch events over port 12345. Any program that has a TUIO/OSC client can recieve the events. 
+
+TouchProxy - https://touchproxy.codeplex.com/
+
