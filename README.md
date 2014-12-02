@@ -26,7 +26,7 @@
 
 ### Receive Touch Events on Windows 8/8.1
 
-This program currently sends OSC messages of recognize touch events over port 12345. Any program that has a TUIO/OSC client can recieve the events. 
+This program currently sends OSC messages of touch events over port 12345. Any program that has a TUIO/OSC client can recieve the events. 
 
 TouchProxy - https://touchproxy.codeplex.com/
 
