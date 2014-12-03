@@ -107,11 +107,11 @@
     <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscParameterSync.cpp" />
     <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscReceiver.cpp" />
     <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscSender.cpp" />
+    <ClCompile Include="src\KinectBase.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\DepthProc.cpp" />
     <ClCompile Include="src\IRProc.cpp" />
-    <ClCompile Include="src\KinectSensors.cpp" />
     <ClCompile Include="..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.cpp" />
     <ClCompile Include="..\..\..\addons\ofxOpenCv\src\ofxCvContourFinder.cpp" />
     <ClCompile Include="..\..\..\addons\ofxOpenCv\src\ofxCvFloatImage.cpp" />
@@ -150,10 +150,10 @@
     <ClInclude Include="..\..\..\addons\ofxTuio\src\ofxTuioCursor.h" />
     <ClInclude Include="..\..\..\addons\ofxTuio\src\ofxTuioObject.h" />
     <ClInclude Include="..\..\..\addons\ofxTuio\src\ofxTuioPoint.h" />
+    <ClInclude Include="src\KinectBase.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\DepthProc.h" />
     <ClInclude Include="src\IRProc.h" />
-    <ClInclude Include="src\KinectSensors.h" />
     <ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h" />
     <ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.h" />
     <ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvConstants.h" />

@@ -13,9 +13,6 @@
     <ClCompile Include="src\IRProc.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\KinectSensors.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -90,6 +87,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxBlobTracker\src\ofxBlobTracker.cpp">
       <Filter>addons\ofxBlobTracker\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KinectBase.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -204,9 +204,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\IRProc.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\KinectSensors.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ofApp.h">
@@ -802,6 +799,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxBlobTracker\src\ofxBlobTracker.h">
       <Filter>addons\ofxBlobTracker\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KinectBase.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
