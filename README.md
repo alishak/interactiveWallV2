@@ -16,13 +16,14 @@
 3. Extract OpenFrameworks to a known place.
 4. Extract ofxKinectForWindows2 to **(OpenFrameworks root)/addons** & rename to just "ofxKinectForWindows2"
 5. Repeat previous step for ofxBlobTracker and ofxTuio
-6. Copy this project into **(OpenFramworks root)/apps/myApps/**  
+6. Repeat step 4. for the custom ofxOsc folder provided with this repository
+7. Copy this project into **(OpenFramworks root)/apps/myApps/**  
 (make sure you create the "myApps" folder, if it's not there)
-7. go to the **(OpenFrameworks root)\addons\ofxKinectForWindows2\ofxKinectForWindows2Lib** folder, edit "ofxKinectForWindows2Lib.vcxproj" and modify lines 21, 27 to "<PlatformToolset>v120</PlatformToolset>" (it is v110, which will only compile with Visual Studio 2012)
+8. go to the **(OpenFrameworks root)\addons\ofxKinectForWindows2\ofxKinectForWindows2Lib** folder, edit "ofxKinectForWindows2Lib.vcxproj" and modify lines 21, 27 to "<PlatformToolset>v120</PlatformToolset>" (it is v110, which will only compile with Visual Studio 2012)
 
-8. Compile, you will get an error in the "Proceses.h" file, comments out the three lines causing the error.
+9. Compile, you will get an error in the "Proceses.h" file, comments out the three lines causing the error.
 
-9. Compile & enjoy!
+10. Compile & enjoy!
 
 ### Receive Touch Events on Windows 8/8.1
 
