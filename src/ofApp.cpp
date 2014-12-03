@@ -1,5 +1,5 @@
 #include "ofApp.h"
-//https://github.com/patriciogonzalezvivo/ofxBlobTracker
+
 ofApp::~ofApp() {
 	delete kinect;
 	//delete depth;
@@ -28,15 +28,9 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	kinect->update();
-	//depth->update(kinect);
+	
 	IR->update(kinect);
-
-	//if (!calibrating) {
-		//tuioClient.getMessage();
-	//}
-	//else {
-		
-	//}
+	//depth->update(kinect);
 }
 
 //--------------------------------------------------------------
@@ -47,13 +41,6 @@ void ofApp::draw(){
 	
 	IR->draw();
 	//depth->draw();
-
-	//if (!calibrating) {
-		//tuioClient.drawCursors();
-	//}
-	//else {
-
-	//}
 }
 
 //--------------------------------------------------------------
@@ -107,7 +94,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
-/*
+/* For testing your own TUIO Client. Will draw the recieved cursors on screen
 void ofApp::tuioAdded(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight());
 	cout << "Point n" << tuioCursor.getSessionId() << " add at " << loc << endl;

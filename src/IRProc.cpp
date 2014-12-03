@@ -22,14 +22,14 @@ void IRProc::update(ofxKFW2::Device *kinect) {
 			firstReference(kinect);
 		}
 		
-		//Recalibrate by pressing spacebar
+		//Record reference image again by pressing spacebar
 		if (bLearnBackground == true) {
 			recalibrate(kinect);
 		}
 
 		thresholdDifference();
 
-		retreiveAndBlur();
+		retrieveAndBlur();
 
 		findContours();
 
@@ -37,42 +37,7 @@ void IRProc::update(ofxKFW2::Device *kinect) {
 	}
 	
 	if (calibrating) {
-		if (blobTracker.size() == 1) {
-			if (blobTracker[0].id == lastID) {
-				
-				if (inCrosshair == false) {
-					startTime = ofGetElapsedTimeMillis();
-					inCrosshair = true;
-				}
-				else {
-					elapsedTime = ofGetElapsedTimeMillis() - startTime;
-					color = GREEN;
-					if (elapsedTime > 2000) {
-						temp_dest[corner - 1] = ofPoint(blobTracker[0].centroid.x * kWidth, blobTracker[0].centroid.y * kHeight);
-						corner = corner + 1 == 5 ? 5 : (corner % 4) + 1;
-						inCrosshair = false;
-						elapsedTime = 0;
-					}
-
-				}
-				
-			}
-			else {
-				inCrosshair = false;
-				color = RED;
-				elapsedTime = 0;
-			}
-
-			lastID = blobTracker[0].id;
-		}
-		else { color = RED; }
-
-		if (corner == 5) {
-			calibrating = false;
-			memcpy(src_cam_warp, temp_dest, 4 * sizeof(ofPoint));
-			thresh_low = 400;
-		}
-	
+		calibrate();
 	}
 }
 

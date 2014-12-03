@@ -1,6 +1,6 @@
-#include "KinectSensors.h"
+#include "KinectBase.h"
 
-class DepthProc : public KinectSensors {
+class DepthProc : public KinectBase {
 	private:
 		void thresholdDifference();
 		bool sampling(ofxKFW2::Device *);
